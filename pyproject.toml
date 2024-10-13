@@ -1,0 +1,28 @@
+[tool.poetry]
+name = "Course/module4"
+version = "0.1.0"
+description = ""
+authors = ["Sergey <nekrasov-nekras-nekrasov@mail.ru>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.12"
+pandas = "^2.2.3"
+openpyxl = "^3.1.5"
+certifi = "^2024.8.30"
+datetime = "^5.5"
+
+
+[tool.poetry.group.lint.dependencies]
+mypy = "^1.11.2"
+black = "^24.10.0"
+isort = "^5.13.2"
+
+
+[tool.poetry.group.dev.dependencies]
+flake8 = "^7.1.1"
+pytest = "^8.3.3"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

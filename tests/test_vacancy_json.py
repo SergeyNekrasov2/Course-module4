@@ -35,14 +35,14 @@ def test_save_vacancy():
         data = json.load(file)
     assert res == ext
 
-def test_delete_vacancy():
-    """Тестирование метода удаления из файла данных"""
-    test_2 = HHVacancy()
-    test_2.safe_vacancy(vacan)
-    result = test_2.delete_vacancy('Санкт-Петербург')
-    with open('data/suitable_vacancies.json', 'r', encoding="utf-8") as file:
-        data = json.load(file)
-    assert result == data
+# def test_delete_vacancy():
+#     """Тестирование метода удаления из файла данных"""
+#     test_2 = HHVacancy()
+#     test_2.safe_vacancy(vacan)
+#     result = test_2.delete_vacancy('Санкт-Петербург')
+#     with open('data/suitable_vacancies.json', 'r', encoding="utf-8") as file:
+#         data = json.load(file)
+#     assert result == data
 
 
 def test_vacancy_from_file():

@@ -1,0 +1,22 @@
+[
+    {
+        "name": "Middle Python Developer",
+        "city": "Москва",
+        "salary": {
+            "from": 200000,
+            "to": 0
+        },
+        "url": "https://hh.ru/vacancy/108969522",
+        "description": "FastAPI, SQLAlchemy, Pydantic (v1/v2). Scrapy. Docker, Airflow, Celery, Redis. Postgres. Опыт работы с Python от 2х..."
+    },
+    {
+        "name": "Python разработчик",
+        "city": "Санкт-Петербург",
+        "salary": {
+            "from": 250000,
+            "to": 300000
+        },
+        "url": "https://hh.ru/vacancy/108168771",
+        "description": "Python 3. Опыт работы с фреймворком FastAPI и с асинхронным вызовами (Asyncpg, Asyncio ...). Опыт работы с микросервисной архитектурой. Docker. PostgreSQL. "
+    }
+]

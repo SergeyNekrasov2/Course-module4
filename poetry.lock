@@ -674,6 +674,28 @@ files = [
 ]
 
 [[package]]
+name = "termtables"
+version = "0.2.4"
+description = "Pretty tables in the terminal"
+optional = false
+python-versions = ">=3.6"
+files = [
+    {file = "termtables-0.2.4-py3-none-any.whl", hash = "sha256:0ca860eed8957db0045020bcdfcf6620e188b0d776e8543a57ff539fcfeec26d"},
+    {file = "termtables-0.2.4.tar.gz", hash = "sha256:797c6afeb78abdab97cd5bfbbd2fc1bfbd9630052699dc881b27b334bcc6a73f"},
+]
+
+[[package]]
+name = "texttable"
+version = "1.7.0"
+description = "module to create simple ASCII tables"
+optional = false
+python-versions = "*"
+files = [
+    {file = "texttable-1.7.0-py2.py3-none-any.whl", hash = "sha256:72227d592c82b3d7f672731ae73e4d1f88cd8e2ef5b075a7a7f01a23a3743917"},
+    {file = "texttable-1.7.0.tar.gz", hash = "sha256:2d2068fb55115807d3ac77a4ca68fa48803e84ebb0ee2340f858107a36522638"},
+]
+
+[[package]]
 name = "typing-extensions"
 version = "4.12.2"
 description = "Backported and Experimental Type Hints for Python 3.8+"
@@ -769,4 +791,4 @@ testing = ["coverage[toml]", "zope.event", "zope.testing"]
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.12"
-content-hash = "ece792785fc3b3ce7c2588602bcee0952778a9a148e42445fe87ac31964b67dc"
+content-hash = "b6006997720ec8343420e4098fc04e1eeca6955d28412b1b2c4898618261e50b"

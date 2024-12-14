@@ -36,7 +36,7 @@ class GetVacancies(AbstractGet):
             return []
 
 
-# if __name__ == "__main__":
-#     data = GetVacancies("python")
-#     result = data._loading()
-#     print(result)
+if __name__ == "__main__":
+    data = GetVacancies("python")
+    result = data._loading()
+    print(result)

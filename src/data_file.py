@@ -140,6 +140,6 @@ class DeleteData(OperationsWithVacancies, AbstractDelete):
             return f"Файл {self.__file} очищен"
 
 
-# if __name__ == "__main__":
-#     data_to_file = SaveData("python", "Junior", "Полная занятость", "RUR", 50_000, 100_000)
-#     print(data_to_file._save_data())
+if __name__ == "__main__":
+    data_to_file = SaveData("python", "Junior", "Полная занятость", "RUR", 50_000, 100_000)
+    print(data_to_file._save_data())

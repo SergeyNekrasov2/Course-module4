@@ -1,5 +1,5 @@
 # Course-module4
-Курсовая работа по модулю 4
+Курсовая работа по модулю 4.
 # HeadHunter Vacancy Project
 ## Description
 Проект создан для получения актуальных вакансий, полученных из API HeadHunter.

@@ -910,7 +910,7 @@ def return_test_lowest_pay() -> Dict:
 
 @pytest.fixture
 def return_test_get_max_avg_salary() -> float:
-    return 75000.0
+    return 75.000
 
 
 @pytest.fixture

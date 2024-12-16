@@ -43,7 +43,7 @@ class SaveData(SalaryOfVacancies, OperationsWithVacancies, AbstractSave):
         currency: str,
         pay_from: int,
         pay_to: int,
-        file: str = "C:/Users/Nurlan/IT/Проекты/results4/data/hh_vacancies.json",
+        file: str = "C:/Users/Sergey/PyCharm projects/Course-module4/data/hh_vacancies.json",
     ):  # noqa: E501
         """Метод-конструктор"""
         super().__init__(keyword, keyword_2, employment, currency, pay_from, pay_to)
@@ -140,6 +140,6 @@ class DeleteData(OperationsWithVacancies, AbstractDelete):
             return f"Файл {self.__file} очищен"
 
 
-if __name__ == "__main__":
-    data_to_file = SaveData("python", "Junior", "Полная занятость", "RUR", 50_000, 100_000)
-    print(data_to_file._save_data())
+# if __name__ == "__main__":
+#     data_to_file = SaveData("python", "Junior", "Полная занятость", "RUR", 50_000, 100_000)
+#     print(data_to_file._save_data())

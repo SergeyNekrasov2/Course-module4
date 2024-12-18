@@ -1,97 +1,125 @@
-from typing import Any
-
-from texttable import Texttable  # type: ignore
-
-from src.get_vacancies import GetVacancies
-from src.operations_with_vacancies import SalaryOfVacancies
+from src.json_saver import JSONSaver
+from src.vacancy import Vacancy
 
 
-def search(keyword: str, keyword_2: str, occupation: str, curr: str, salary_from: str, salary_to: str) -> Any:
-    """Функция, с помощью которой пользователь может ввести поисковый запрос для запроса вакансий из hh.ru"""
+def filter_vacancies(vacancies_list: list, filter_words: list):
+    """Функция фильтрует вакансии по ключевым словам"""
+    filtered_vacancies = []
 
-    data = SalaryOfVacancies(keyword, keyword_2, occupation, curr, int(salary_from), int(salary_to))
-    operation_data = data._avg()
-    readable_list_vacations = []
-    for post in operation_data:
-        readable_list_vacations.append(
-            f"Имя вакансии - {post["name"]},"
-            f"месторасположение - {post["area"]["name"]},"
-            f"средняя зарплата - {post["salary"]["avg"]},"
-            f"валюта - {post["salary"]["currency"]},"
-            f"url - {post["alternate_url"]}"
-        )
-    return readable_list_vacations
+    for vacancy in vacancies_list:
+        for word in filter_words:
+            name = vacancy.get("name", "")
+            snippet = vacancy.get("snippet", "")
 
+            # Ensure that name and snippet are strings
+            if not isinstance(name, str):
+                name = ""
+            if not isinstance(snippet, str):
+                snippet = ""
 
-def top_vacations(keyword: str, quantity: str) -> list:
-    """Функция,
-    с помощью которой пользователь может получить топ N вакансий по зарплате(N запрашивать у пользователя)"""
-    vacancies = GetVacancies(keyword)._loading()
-    list_vacancies = []
-    for employee in vacancies:
-        if (
-            employee.get("salary") is None
-            or employee["salary"].get("to") is None
-            or employee["salary"].get("from") is None
-            or employee in list_vacancies
-        ):
-            continue
-        list_vacancies.append(employee)
+            if word.lower() in name.lower() or word.lower() in snippet.lower():
+                filtered_vacancies.append(vacancy)
+                break  # Optional: Stop checking other words if a match is found
 
-    for vacation in list_vacancies:
-        avg_pay = (vacation["salary"].get("from") + vacation["salary"].get("to")) / 2
-        vacation["salary"]["avg"] = avg_pay
-
-    top_five_vacations = sorted(list_vacancies, key=lambda x: x["salary"]["avg"])[: int(quantity)]
-    readable_list_vacations = []
-    for job in top_five_vacations:
-        readable_list_vacations.append(
-            {
-                "имя вакансии": job["name"],
-                "месторасположение": job["area"]["name"],
-                "средняя зарплата": job["salary"]["avg"],
-                "валюта": job["salary"]["currency"],
-                "url": job["alternate_url"],
-            }
-        )
-    return readable_list_vacations
+    return filtered_vacancies
 
 
-def get_vacations_with_keyword(keyword: str) -> Any:
-    """Функция, с помощью которой пользователь может получить вакансии по ключевому слову"""
-    vacancies = GetVacancies(keyword)._loading()
-    t = Texttable()
-    for worker in vacancies:
-        if worker.get("salary") is None or worker["salary"].get("to") is None or worker["salary"].get("from") is None:
-            continue
+def get_vacancies_by_salary(filtered_vacancies, salary_range):
+    """Функция сортирует вакансии по вилке зарплаты (от и до)"""
+    filtered_salary_vacancies = []
+    from_to_salary = salary_range.split()
+
+    try:
+        min_salary = int(from_to_salary[0])
+        max_salary = int(from_to_salary[2])
+    except (IndexError, ValueError):
+        print("Некорректный ввод диапазона зарплат. Пример: '100000 - 150000'")
+        return []
+
+    for vacancy in filtered_vacancies:
+        salary = vacancy.get("salary", {})
+        salary_from = salary.get("from")
+        salary_to = salary.get("to")
+
+        # Check if salary_from and salary_to are not None
+        if salary_from is not None and salary_to is not None:
+            try:
+                salary_from = int(salary_from)
+                salary_to = int(salary_to)
+            except ValueError:
+                continue  # Skip if salary values are not numeric
+
+            if salary_from >= min_salary and salary_to <= max_salary:
+                filtered_salary_vacancies.append(vacancy)
         else:
-            t.add_row(
-                [
-                    worker["name"],
-                    worker["area"]["name"],
-                    worker["salary"]["from"],
-                    worker["salary"]["to"],
-                    worker["salary"]["currency"],
-                    worker["alternate_url"],
-                ]
-            )
-    return t.draw()
+            # Handle vacancies with missing salary information if necessary
+            continue  # Or you can include logic to handle these cases
+
+    # Sort vacancies by 'to' salary in descending order
+    return sorted(
+        filtered_salary_vacancies,
+        key=lambda x: x["salary"].get("to", 0),
+        reverse=True
+    )
+
+
+def get_top_vacancies(filtered_vacancies, top_n):
+    """Функция вывода топ вакансий по выбору пользователя"""
+    filtered_vacancies = filtered_vacancies[0: top_n]
+    return filtered_vacancies
+
+
+def print_vacancies(vacancies):
+    """Функция вывода отфильтрованных вакансий в консоль"""
+    return print(vacancies)
 
 
 if __name__ == "__main__":
-    key_word, name, employment, currency, pay_from, pay_to = input(
-        "Введите информацию через запятую: \n"
-        "ЯП, которым владеете; \n"
-        "ваш уровень пользования этим языком;\n"
-        "форма занятости; \n"
-        "валюта, в которой хотите получать зарплату;\n"
-        "зарплатА ОТ; \n"
-        "зарплата ДО: \n"
-    ).split(", ")
-    vacations = search(key_word, name, employment, currency, pay_from, pay_to)
-    print(vacations)
-    for vacancy in vacations:
-        print(vacancy)
-    n = input("Введите кол-во вакансий с самой высокой зарплатой: ")
-    print(top_vacations(key_word, n))
-    print(get_vacations_with_keyword(key_word))
+    my_list = [
+        {"name": "Август",
+         "snippet": "Август и февраль",
+         "salary": {
+             "from": 100,
+             "to": 200
+         }
+         },
+        {"name": "Сентябрь",
+         "snippet": "Август и февраль",
+         "salary": {
+             "from": 100,
+             "to": 300
+         }
+         },
+        {"name": "Октябрь",
+         "snippet": "ноябрь",
+         "salary": {
+             "from": 400,
+             "to": 500
+         }
+         },
+        {"name": "Ноябрь",
+         "snippet": "февраль",
+         "salary": {
+             "from": 600,
+             "to": 800
+         }
+         }
+    ]
+
+    # search_query = input("Введите поисковый запрос: ")
+    top_ = int(input("Введите количество вакансий для вывода в топ N: "))
+    filter_word = input("Введите ключевые слова для фильтрации вакансий: ").split()
+    salary_rang = input("Введите диапазон зарплат: ")  # Пример: 100000 - 150000
+
+    filtered_vacanciess = filter_vacancies(my_list, filter_word)
+
+    ranged_vacancies = get_vacancies_by_salary(filtered_vacanciess, salary_rang)
+
+    top_vacancies = get_top_vacancies(ranged_vacancies, top_)
+
+    print_vacancies(top_vacancies)
+
+    for top in top_vacancies:
+        vac = Vacancy(top)
+        json_templ = JSONSaver(file_saver="../data/filtered_vacancies.json")
+        json_templ.add_vacancy(vac)

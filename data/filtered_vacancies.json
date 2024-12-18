@@ -1,0 +1,11 @@
+[
+    {
+        "name": "Python Developer",
+        "url": "<https://hh.ru/vacancy/123456>",
+        "salary": {
+            "from": 100000,
+            "to": 130000
+        },
+        "snippet": "Требования: опыт работы от 3 лет..."
+    }
+]

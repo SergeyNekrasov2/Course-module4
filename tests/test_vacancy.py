@@ -1,27 +1,40 @@
 from src.vacancy import Vacancy
-import json
-
-with open('tests/data_tests.json', 'r', encoding="utf-8") as file:
-    data = json.load(file)
 
 
+def test_init_vacancy(test_add_vacancy):
+    assert test_add_vacancy.name == "Python Developer"
+    assert test_add_vacancy.url == "<https://hh.ru/vacancy/123456>"
+    assert test_add_vacancy.salary == {'from': 100000, 'to': 150000}
+    assert test_add_vacancy.snippet == "Требования: опыт работы от 3 лет..."
 
-# def test_valid(valid):
-#     """Тестирование метода валидации в классе HH()"""
-#     test_vac = Vacancy('Разработчик', 'Москва', 20000, data)
-#
-#     assert test_vac == valid
+    Vacancy().clear_list()
 
-def test_filter_city(city):
-    """Тестирование метода фильтрации по городу в классе HH()"""
-    test_vac = Vacancy('Разработчик', 'Москва', 20000, data)
 
-    assert test_vac.filter_city() == city
+def test_list_vacancies(test_add_vacancy, test_result_filtered_vacancy):
+    assert test_add_vacancy.list_vacancies()[0] == test_result_filtered_vacancy
 
-def test_difference(difference):
-    """Тестирование метода фильтрации по заработной плате в классе HH()"""
-    test_vac = Vacancy('Разработчик', 'Москва', 120000, data)
+    Vacancy().clear_list()
 
-    city_1 = test_vac.filter_city()
-    dif = test_vac.__le__(12000,city_1)
-    return dif == difference
+
+def test_filtered_salary_vacancy(capsys, vacancy_1, vacancy_2, test_result_filtered_vacancy):
+    assert len(Vacancy.list_vacancies()) == 2
+
+    Vacancy.filtered_salary(0, 150000)
+    message = capsys.readouterr()
+    assert message.out.strip() == f"{test_result_filtered_vacancy}"
+
+    Vacancy().clear_list()
+
+
+def test_ge_vacancy(capsys, vacancy_1, vacancy_2):
+    print(Vacancy.__ge__(vacancy_2, vacancy_1))
+    message = capsys.readouterr()
+    assert message.out.strip() == 'True'
+
+    Vacancy().clear_list()
+
+
+def test_cast_to_object_list(test_cast_to_object_vacancy, test_cast_to_add_vacancy):
+    Vacancy().clear_list()
+    Vacancy.cast_to_object_list(test_cast_to_object_vacancy)
+    assert Vacancy.list_vacancies() == test_cast_to_add_vacancy

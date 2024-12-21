@@ -23,7 +23,7 @@ class Vacancy:
             "salary": self.__salary,
             "snippet": self.__snippet
         }
-        self.__list_vacancies.append(dict_vacancy)
+        self.__list_vacancies.append(self)
 
     @staticmethod
     def __validate(salary):

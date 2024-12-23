@@ -8,22 +8,59 @@ def filter_vacancies(vacancies_list: list, filter_words: list):
 
     for vacancy in vacancies_list:
         for word in filter_words:
-            if word.lower() in vacancy["name"].lower() or word.lower() in vacancy["snippet"].lower():
+            name = vacancy.get("name", "")
+            snippet = vacancy.get("snippet", "")
+
+            # Ensure that name and snippet are strings
+            if not isinstance(name, str):
+                name = ""
+            if not isinstance(snippet, str):
+                snippet = ""
+
+            if word.lower() in name.lower() or word.lower() in snippet.lower():
                 filtered_vacancies.append(vacancy)
+                break  # Optional: Stop checking other words if a match is found
 
     return filtered_vacancies
 
 
 def get_vacancies_by_salary(filtered_vacancies, salary_range):
-    """Функция сортирует вакансии по вилке зарплаты(от и до)"""
+    """Функция сортирует вакансии по вилке зарплаты (от и до)"""
     filtered_salary_vacancies = []
     from_to_salary = salary_range.split()
 
-    for vacancy in filtered_vacancies:
-        if vacancy["salary"]["from"] >= int(from_to_salary[0]) and vacancy["salary"]["to"] <= int(from_to_salary[2]):
-            filtered_salary_vacancies.append(vacancy)
+    try:
+        min_salary = int(from_to_salary[0])
+        max_salary = int(from_to_salary[2])
+    except (IndexError, ValueError):
+        print("Некорректный ввод диапазона зарплат. Пример: '100000 - 150000'")
+        return []
 
-    return sorted(filtered_salary_vacancies, key=lambda to: to["salary"]["to"], reverse=True)
+    for vacancy in filtered_vacancies:
+        salary = vacancy.get("salary", {})
+        salary_from = salary.get("from")
+        salary_to = salary.get("to")
+
+        # Check if salary_from and salary_to are not None
+        if salary_from is not None and salary_to is not None:
+            try:
+                salary_from = int(salary_from)
+                salary_to = int(salary_to)
+            except ValueError:
+                continue  # Skip if salary values are not numeric
+
+            if salary_from >= min_salary and salary_to <= max_salary:
+                filtered_salary_vacancies.append(vacancy)
+        else:
+            # Handle vacancies with missing salary information if necessary
+            continue  # Or you can include logic to handle these cases
+
+    # Sort vacancies by 'to' salary in descending order
+    return sorted(
+        filtered_salary_vacancies,
+        key=lambda x: x["salary"].get("to", 0),
+        reverse=True
+    )
 
 
 def get_top_vacancies(filtered_vacancies, top_n):

@@ -1,136 +1,191 @@
-class Vacancy:
-    """Класс создания вакансии с параметрами"""
-    __list_vacancies: list = []
-    __slots__ = ("__name", "__url", "__snippet", "__salary")
+import pytest
 
-    def __init__(
-        self,
-        name: str = "Не указан",
-        url: str = "Не указан",
-        salary: str | None | dict = None,
-        snippet: str = "Не указан"
+from src.vacancy import Vacancy
 
-    ):
-        """Конструктор инициализации объекта класса Vacancy (вакансия работника)"""
-        self.__name = name
-        self.__url = url
-        self.__snippet = snippet
-        self.__salary = self.__validate(salary)
 
-        dict_vacancy = {
-            "name": self.__name,
-            "url": self.__url,
-            "salary": self.__salary,
-            "snippet": self.__snippet
+@pytest.fixture
+def test_requests_api():
+    return [
+        {
+            "id": "91773507",
+            "premium": 'false',
+            "name": "Разработчик JavaScript / Разработчик на платформе",
+            "department": 'null',
+            "has_test": 'false',
+            "response_letter_required": 'false',
+            "area": {
+                "id": "4",
+                "name": "Новосибирск",
+                "url": "https://api.hh.ru/areas/4"
+            },
+            "salary": 'null',
+            "type": {
+                "id": "open",
+                "name": "Открытая"
+            },
+            "address": {
+                "city": "Новосибирск",
+                "street": "Октябрьская магистраль",
+                "building": "4",
+                "lat": 55.022567,
+                "lng": 82.930086,
+                "description": 'null',
+                "raw": "Новосибирск, Октябрьская магистраль, 4",
+                "metro": {
+                    "station_name": "Октябрьская",
+                    "line_name": "Ленинская",
+                    "station_id": "52.298",
+                    "line_id": "52",
+                    "lat": 55.018789,
+                    "lng": 82.939007
+                },
+                "metro_stations": [
+                    {
+                        "station_name": "Октябрьская",
+                        "line_name": "Ленинская",
+                        "station_id": "52.298",
+                        "line_id": "52",
+                        "lat": 55.018789,
+                        "lng": 82.939007
+                    },
+                    {
+                        "station_name": "Площадь Ленина",
+                        "line_name": "Ленинская",
+                        "station_id": "52.297",
+                        "line_id": "52",
+                        "lat": 55.029941,
+                        "lng": 82.92069
+                    }
+                ],
+                "id": "906680"
+            },
+            "response_url": 'null',
+            "sort_point_distance": 'null',
+            "published_at": "2024-07-29T12:14:00+0300",
+            "created_at": "2024-07-29T12:14:00+0300",
+            "archived": 'false',
+            "apply_alternate_url": "https://hh.ru/applicant/vacancy_response?vacancyId=91773507",
+            "show_logo_in_search": 'null',
+            "insider_interview": 'null',
+            "url": "https://api.hh.ru/vacancies/91773507?host=hh.ru",
+            "alternate_url": "https://hh.ru/vacancy/91773507",
+            "relations": [],
+            "employer": {
+                "id": "3034828",
+                "name": "Смарт консалтинг",
+                "url": "https://api.hh.ru/employers/3034828",
+                "alternate_url": "https://hh.ru/employer/3034828",
+                "logo_urls": {
+                    "original": "https://img.hhcdn.ru/employer-logo-original/1063302.png",
+                    "90": "https://img.hhcdn.ru/employer-logo/5873841.png",
+                    "240": "https://img.hhcdn.ru/employer-logo/5873842.png"
+                },
+                "vacancies_url": "https://api.hh.ru/vacancies?employer_id=3034828",
+                "accredited_it_employer": 'true',
+                "trusted": 'true'
+            },
+            "snippet": {
+                "requirement": "Базовые знания JavaScript."
+                               " Будет здорово, если ты: - Имеешь базовые знания HTML, "
+                               "CSS. - Имеешь базовые знания SQL. -аналитический склад ума. -",
+                "responsibility": "Мы - сибирская аккредитованная IT-компания полного цикла "
+                                  "(от идеи до разработки, внедрения программного обеспечения, "
+                                  "сервисного сопровождения, "
+                                  "вплоть до этапа \"похорон..."
+            },
+            "contacts": 'null',
+            "schedule": {
+                "id": "fullDay",
+                "name": "Полный день"
+            },
+            "working_days": [],
+            "working_time_intervals": [],
+            "working_time_modes": [],
+            "accept_temporary": 'false',
+            "professional_roles": [
+                {
+                    "id": "96",
+                    "name": "Программист, разработчик"
+                }
+            ],
+            "accept_incomplete_resumes": 'false',
+            "experience": {
+                "id": "noExperience",
+                "name": "Нет опыта"
+            },
+            "employment": {
+                "id": "full",
+                "name": "Полная занятость"
+            },
+            "adv_response_url": 'null',
+            "is_adv_vacancy": 'false',
+            "adv_context": 'null'
         }
-        self.__list_vacancies.append(dict_vacancy)
-
-    @staticmethod
-    def __validate(salary):
-        """Метод валидации зарплаты"""
-        if salary is None:
-            return {"from": 0, "to": 0}
-        if isinstance(salary, str):
-            # Пытаемся распарсить строку зарплаты, например, "100000 - 150000"
-            try:
-                from_salary, to_salary = map(int, salary.split(" - "))
-                return {"from": from_salary, "to": to_salary}
-            except ValueError:
-                # Если парсинг не удался, возвращаем значения по умолчанию
-                return {"from": 0, "to": 0}
-        elif isinstance(salary, dict):
-            # Убеждаемся, что ключи 'from' и 'to' присутствуют
-            from_salary = salary.get('from', 0)
-            to_salary = salary.get('to', 0)
-            return {"from": from_salary, "to": to_salary}
-        else:
-            # Если тип данных неожиданный, возвращаем значения по умолчанию
-            return {"from": 0, "to": 0}
-
-    def __ge__(self, other):
-        """Метод сравнения вакансий по зарплате (верхний порог)"""
-        self_salary_to = self.__salary.get("to", 0)
-        other_salary_to = other.__salary.get("to", 0)
-        return self_salary_to >= other_salary_to
-
-    @classmethod
-    def cast_to_object_list(cls, list_vacancies):
-        """Метод добавления вакансий из списка вакансий"""
-        for vacancy_data in list_vacancies:
-            # Валидируем зарплату
-            salary = cls.__validate(vacancy_data.get("salary"))
-
-            snippet = vacancy_data.get("snippet", "Не указан")
-            # Если сниппет является словарем, извлекаем требование
-            if isinstance(snippet, dict):
-                snippet = snippet.get("requirement", "")
-
-            # Создаем экземпляр вакансии
-            cls(
-                name=vacancy_data.get("name", "Не указан"),
-                url=vacancy_data.get("url", "Не указан"),
-                salary=salary,
-                snippet=snippet,
-            )
-        return cls.__list_vacancies
-
-    @classmethod
-    def filtered_salary(cls, from_salary: int = 0, to_salary: int = float("inf")):
-        """Метод фильтрации вакансий по зарплате (от и до вилка)"""
-        for vacancies in cls.__list_vacancies:
-            if vacancies["salary"].get("from", 0) >= from_salary and vacancies["salary"]["to"] <= to_salary:
-                print(vacancies)
-
-    @classmethod
-    def list_vacancies(cls):
-        """Метод для получения всех вакансий"""
-        return cls.__list_vacancies
-
-    @classmethod
-    def clear_list(cls):
-        cls.__list_vacancies = []
-
-    @property
-    def name(self):
-        return self.__name
-
-    @property
-    def url(self):
-        return self.__url
-
-    @property
-    def salary(self):
-        return self.__salary
-
-    @property
-    def snippet(self):
-        return self.__snippet
-
-
-if __name__ == "__main__":
-    Vacancy.clear_list()
-    vacancy_data_list = [
-        {
-            "name": "Python Developer",
-            "url": "https://hh.ru/vacancy/123456",
-            "salary": "100000 - 150000",
-            "snippet": "Требования: опыт работы от 3 лет..."
-        },
-        {
-            "name": "Senior Python Developer",
-            "url": "https://hh.ru/vacancy/654321",
-            "salary": "150000 - 200000",
-            "snippet": "Требования: опыт работы от 5 лет..."
-        },
-        {
-            "name": "Junior Python Developer",
-            "url": "https://hh.ru/vacancy/234567",
-            "salary": None,
-            "snippet": "Требования: опыт работы от 1 года..."
-        },
     ]
 
-    Vacancy.cast_to_object_list(vacancy_data_list)
 
-    Vacancy.filtered_salary(0, 150000)
-    print(Vacancy.list_vacancies())
+@pytest.fixture
+def test_add_vacancy():
+    return Vacancy("Python Developer",
+                   "<https://hh.ru/vacancy/123456>",
+                   {'from': 100000, 'to': 150000},
+                   "Требования: опыт работы от 3 лет...")
+
+
+@pytest.fixture
+def test_read_file():
+    return ('[\n'
+            '    {\n'
+            '        "name": "Python Developer",\n'
+            '        "url": "<https://hh.ru/vacancy/123456>",\n'
+            '        "salary": {\n'
+            '            "from": 100000,\n'
+            '            "to": 500000\n'
+            '        },\n'
+            '        "snippet": "Требования: опыт работы от 3 лет..."\n'
+            '    }\n'
+            ']')
+
+
+@pytest.fixture
+def vacancy_1():
+    return Vacancy(
+        "Python Developer", "<https://hh.ru/vacancy/123456>", {'from': 100000, 'to': 150000},
+        "Требования: опыт работы от 3 лет...")
+
+
+@pytest.fixture
+def vacancy_2():
+    return Vacancy(
+        "Python Developer", "<https://hh.ru/vacancy/123456>", {'from': 100000, 'to': 160000},
+        "Требования: опыт работы от 3 лет...")
+
+
+@pytest.fixture
+def test_result_filtered_vacancy():
+    return {'name': 'Python Developer', 'url': '<https://hh.ru/vacancy/123456>',
+            'salary': {'from': 100000, 'to': 150000}, 'snippet': 'Требования: опыт работы от 3 лет...'}
+
+
+@pytest.fixture
+def test_cast_to_object_vacancy():
+    return [
+        {'name': 'Python', 'url': '<https://hh.ru/vacancy/1234561>',
+         'salary': {'from': 100000, 'to': 150000}, 'snippet': {"requirement": 'Требования: опыт работы от 1 лет...'}},
+        {'name': 'Developer', 'url': '<https://hh.ru/vacancy/123452>',
+         'salary': {'from': 110000, 'to': 160000}, 'snippet': {"requirement": 'Требования: опыт работы от 2 лет...'}},
+        {'name': 'Python Developer', 'url': '<https://hh.ru/vacancy/123453>',
+         'salary': {'from': 120000, 'to': 170000}, 'snippet': {"requirement": 'Требования: опыт работы от 3 лет...'}}
+    ]
+
+
+@pytest.fixture
+def test_cast_to_add_vacancy():
+    return [
+        {'name': 'Python', 'url': '<https://hh.ru/vacancy/1234561>',
+         'salary': {'from': 100000, 'to': 150000}, 'snippet': 'Требования: опыт работы от 1 лет...'},
+        {'name': 'Developer', 'url': '<https://hh.ru/vacancy/123452>',
+         'salary': {'from': 110000, 'to': 160000}, 'snippet': 'Требования: опыт работы от 2 лет...'},
+        {'name': 'Python Developer', 'url': '<https://hh.ru/vacancy/123453>',
+         'salary': {'from': 120000, 'to': 170000}, 'snippet': 'Требования: опыт работы от 3 лет...'}
+    ]

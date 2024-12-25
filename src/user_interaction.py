@@ -8,8 +8,9 @@ def filter_vacancies(vacancies_list: list, filter_words: list):
 
     for vacancy in vacancies_list:
         for word in filter_words:
-            if word.lower() in vacancy["name"].lower() or word.lower() in vacancy["snippet"].lower():
+            if word.lower() in vacancy.name.lower() or word.lower() in vacancy.snippet.lower():
                 filtered_vacancies.append(vacancy)
+                break
 
     return filtered_vacancies
 
@@ -20,10 +21,10 @@ def get_vacancies_by_salary(filtered_vacancies, salary_range):
     from_to_salary = salary_range.split()
 
     for vacancy in filtered_vacancies:
-        if vacancy["salary"]["from"] >= int(from_to_salary[0]) and vacancy["salary"]["to"] <= int(from_to_salary[2]):
+        if vacancy.salary >= int(from_to_salary[0]) and vacancy.salary <= int(from_to_salary[2]):
             filtered_salary_vacancies.append(vacancy)
 
-    return sorted(filtered_salary_vacancies, key=lambda to: to["salary"]["to"], reverse=True)
+    return sorted(filtered_salary_vacancies, key=lambda to: to.salary, reverse=True)
 
 
 def get_top_vacancies(filtered_vacancies, top_n):
@@ -74,9 +75,9 @@ if __name__ == "__main__":
     filter_word = input("Введите ключевые слова для фильтрации вакансий: ").split()
     salary_rang = input("Введите диапазон зарплат: ")  # Пример: 100000 - 150000
 
-    filtered_vacanciess = filter_vacancies(my_list, filter_word)
+    filtered_vacancies = filter_vacancies(my_list, filter_word)
 
-    ranged_vacancies = get_vacancies_by_salary(filtered_vacanciess, salary_rang)
+    ranged_vacancies = get_vacancies_by_salary(filtered_vacancies, salary_rang)
 
     top_vacancies = get_top_vacancies(ranged_vacancies, top_)
 

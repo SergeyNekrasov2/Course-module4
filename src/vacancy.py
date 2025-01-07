@@ -17,7 +17,7 @@ class Vacancy:
         self.__snippet = snippet if snippet else "Не указаны требования"
         self.__salary = salary
 
-        # dict_vacancy = {"name": self.__name, "url": self.__url, "salary": self.__salary, "snippet": self.__snippet}
+        dict_vacancy = {"name": self.__name, "url": self.__url, "salary": self.__salary, "snippet": self.__snippet}
         self.__list_vacancies.append(self)
 
     def __validate(self, salary):
@@ -57,19 +57,21 @@ class Vacancy:
     @classmethod
     def cast_to_object_list(cls, list_vacancies):
         """Метод добавления вакансий из списка вакансий"""
-        for vacancies in list_vacancies:
-            if vacancies.salary is None:
-                vacancies.salary = {"from": 0, "to": 0}
-            elif vacancies.salary["from"] is None:
-                vacancies.salary = {"from": 0, "to": vacancies.salary["to"]}
-            elif vacancies.salary["to"] is None:
-                vacancies.salary = {"from": vacancies.salary["from"], "to": 0}
+        for vacancy_data in list_vacancies:
+            # Валидируем зарплату
+            salary = cls.__validate(vacancy_data.get("salary"))
 
+            snippet = vacancy_data.get("snippet", "Не указан")
+            # Если сниппет является словарем, извлекаем требование
+            if isinstance(snippet, dict):
+                snippet = snippet.get("requirement", "")
+
+            # Создаем экземпляр вакансии
             cls(
-                name=vacancies.name,
-                url=vacancies.url,
-                salary=vacancies.salary,
-                snippet=vacancies.snippet["requirement"] if vacancies.snippet["requirement"] is not None else "",
+                name=vacancy_data.get("name", "Не указан"),
+                url=vacancy_data.get("url", "Не указан"),
+                salary=salary,
+                snippet=snippet,
             )
         return cls.__list_vacancies
 
@@ -120,6 +122,9 @@ class Vacancy:
     @property
     def snippet(self):
         return self.__snippet
+
+    def __str__(self):
+        return f"Название: {self.__name}\nСсылка: {self.__url}\nЗарплата: {self.__salary}"
 
 
 if __name__ == "__main__":

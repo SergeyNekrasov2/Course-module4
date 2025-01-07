@@ -8,7 +8,16 @@ def filter_vacancies(vacancies_list: list, filter_words: list):
 
     for vacancy in vacancies_list:
         for word in filter_words:
-            if word.lower() in vacancy.name.lower() or word.lower() in vacancy.snippet.lower():
+            name = vacancy.name
+            snippet = vacancy.snippet
+
+
+            if not isinstance(name, str):
+                name = ""
+            if not isinstance(snippet, str):
+                snippet = ""
+
+            if word.lower() in name.lower() or word.lower() in snippet.lower():
                 filtered_vacancies.append(vacancy)
                 break
 
@@ -29,13 +38,14 @@ def get_vacancies_by_salary(filtered_vacancies, salary_range):
 
 def get_top_vacancies(filtered_vacancies, top_n):
     """Функция вывода топ вакансий по выбору пользователя"""
-    filtered_vacancies = filtered_vacancies[0: top_n]
+    filtered_vacancies = filtered_vacancies[: top_n]
     return filtered_vacancies
 
 
 def print_vacancies(vacancies):
     """Функция вывода отфильтрованных вакансий в консоль"""
-    return print(vacancies)
+    for vacancy in vacancies:
+        print(vacancies)
 
 
 if __name__ == "__main__":

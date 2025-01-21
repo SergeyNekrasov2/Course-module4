@@ -1,3 +1,5 @@
+from socket import fromfd
+
 from src.json_saver import JSONSaver
 from src.vacancy import Vacancy
 
@@ -30,11 +32,11 @@ def get_vacancies_by_salary(filtered_vacancies, salary_range):
     from_to_salary = salary_range.split()
 
     for vacancy in filtered_vacancies:
-        if vacancy.salary >= int(from_to_salary[0]) and vacancy.salary <= int(from_to_salary[2]):
+        if vacancy.salary["from"] >= int(from_to_salary[0]) and vacancy.salary["to"] <= int(from_to_salary[2]):
             filtered_salary_vacancies.append(vacancy)
 
-    return sorted(filtered_salary_vacancies, key=lambda to: to.salary, reverse=True)
-
+    result = sorted(filtered_salary_vacancies, reverse=True)
+    return result
 
 def get_top_vacancies(filtered_vacancies, top_n):
     """Функция вывода топ вакансий по выбору пользователя"""
@@ -45,7 +47,7 @@ def get_top_vacancies(filtered_vacancies, top_n):
 def print_vacancies(vacancies):
     """Функция вывода отфильтрованных вакансий в консоль"""
     for vacancy in vacancies:
-        print(vacancies)
+        print(f"{vacancy}\n")
 
 
 if __name__ == "__main__":

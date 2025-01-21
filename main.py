@@ -16,10 +16,8 @@ def user_interaction():
     hh_vacancies = platforms.load_vacancies(search_query)
 
     # Преобразование набора данных из JSON в список объектов
-    vacancies_add_list = Vacancy.cast_to_object_list(hh_vacancies)
+    vacancies_list = Vacancy.cast_to_object_list(hh_vacancies)
 
-    # Получение списка вакансий из класса Vacancy
-    vacancies_list = Vacancy.list_vacancies()
 
     top_n = int(input("Введите количество вакансий для вывода в топ N: "))
     filter_words = input("Введите ключевые слова для фильтрации вакансий: ").split()
@@ -36,25 +34,16 @@ def user_interaction():
 
     #  Функция вывода вакансий в консоль
     print_vacancies(top_vacancies)
-
-    # Пример работы контструктора класса с одной вакансией
-    vacancy = Vacancy(
-        "Python Developer",
-        "<https://hh.ru/vacancy/123456>",
-        "100 000-150 000 руб.",
-        "Требования: опыт работы от 3 лет...",
-    )
-
-    # Vacancy.validate_salary()
-    # Сохранение информации о вакансиях в файл
     json_saver = JSONSaver()
-    json_saver.add_vacancy(vacancy)
-    json_saver.delete_vacancy(vacancy)
+
+    for vacancy in top_vacancies:
+        json_saver.add_vacancy(vacancy)
+    # json_saver.delete_vacancy(vacancy)
 
     #  циклом создаем каждый словарь обьектом класса Vacancy
-    for filtered_vacancy in [tuple(d.values()) for d in top_vacancies]:
-        vacancy_obj = Vacancy(*filtered_vacancy)
-        json_saver.add_vacancy(vacancy_obj)
+    # for filtered_vacancy in [tuple(d.values()) for d in top_vacancies]:
+    #     vacancy_obj = Vacancy(*filtered_vacancy)
+    #     json_saver.add_vacancy(vacancy_obj)
 
 
 if __name__ == "__main__":

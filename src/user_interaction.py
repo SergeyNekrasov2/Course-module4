@@ -1,5 +1,3 @@
-from socket import fromfd
-
 from src.json_saver import JSONSaver
 from src.vacancy import Vacancy
 
@@ -10,16 +8,7 @@ def filter_vacancies(vacancies_list: list, filter_words: list):
 
     for vacancy in vacancies_list:
         for word in filter_words:
-            name = vacancy.name
-            snippet = vacancy.snippet
-
-
-            if not isinstance(name, str):
-                name = ""
-            if not isinstance(snippet, str):
-                snippet = ""
-
-            if word.lower() in name.lower() or word.lower() in snippet.lower():
+            if word.lower() in vacancy.name.lower() or word.lower() in vacancy.snippet.lower():
                 filtered_vacancies.append(vacancy)
                 break
 
